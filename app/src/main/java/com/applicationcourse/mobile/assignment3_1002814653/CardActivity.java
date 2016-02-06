@@ -15,6 +15,8 @@ import com.applicationcourse.mobile.assignment3_1002814653.camera2basic.R;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public class CardActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -65,6 +67,12 @@ public class CardActivity extends AppCompatActivity {
 
         if (mediaStorageDir.exists()) {
             File[] listOfFiles = mediaStorageDir.listFiles();
+            Arrays.sort(listOfFiles, new Comparator<File>() {
+                @Override
+                public int compare(File lhs, File rhs) {
+                    return Long.valueOf(rhs.lastModified()).compareTo(lhs.lastModified());
+                }
+            });
             for (int i = 0; i < listOfFiles.length; i++) {
                 Bitmap myBitmap = setPic(listOfFiles[i].getAbsolutePath());
                 float[] latlng = new float[2];
