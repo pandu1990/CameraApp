@@ -29,7 +29,7 @@ public class ViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view);
 
         gridView = (GridView) findViewById(R.id.gridView);
-        setItems();
+        //setItems();
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -71,8 +71,8 @@ public class ViewActivity extends AppCompatActivity {
                 try {
                     ExifInterface exif = new ExifInterface(listOfFiles[i].getAbsolutePath());
                     if (exif.getLatLong(latlng)) {
-                        String latitude = String.format("%.4f", latlng[0]);
-                        String longitude = String.format("%.4f", latlng[1]);
+                        String latitude = String.format("%.6f", latlng[0]);
+                        String longitude = String.format("%.6f", latlng[1]);
                         location = latitude + ", " + longitude;
                     }
                 } catch (Exception e) {

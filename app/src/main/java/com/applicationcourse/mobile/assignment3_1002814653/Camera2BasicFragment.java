@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -54,6 +55,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v13.app.FragmentCompat;
 import android.support.v4.content.ContextCompat;
@@ -252,7 +254,7 @@ public class Camera2BasicFragment extends Fragment
     /**
      * This is the output file for our picture.
      */
-    private File mFile;
+    private File mDir;
 
     /**
      * This a callback object for the {@link ImageReader}. "onImageAvailable" will be called when a
@@ -263,7 +265,7 @@ public class Camera2BasicFragment extends Fragment
 
         @Override
         public void onImageAvailable(ImageReader reader) {
-            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mFile, currentLatitude, currentLongitude));
+            mBackgroundHandler.post(new ImageSaver(reader.acquireNextImage(), mDir, currentLatitude, currentLongitude));
         }
 
     };
@@ -457,10 +459,10 @@ public class Camera2BasicFragment extends Fragment
                 != PackageManager.PERMISSION_GRANTED) {
             requestLocationPermission();
         }*/
-        mFile = new File(Environment.getExternalStoragePublicDirectory(
+        mDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        if (!mFile.exists()) {
-            if (!mFile.mkdirs()) {
+        if (!mDir.exists()) {
+            if (!mDir.mkdirs()) {
                 Log.d("MyCameraApp", "failed to create directory");
             }
         }
@@ -942,8 +944,8 @@ public class Camera2BasicFragment extends Fragment
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
-                    showToast("Saved to: " + mFile);
-                    Log.d(TAG, mFile.toString());
+                    showToast("Saved to: " + mDir);
+                    Log.d(TAG, mDir.toString());
                     unlockFocus();
                 }
             };
@@ -980,9 +982,13 @@ public class Camera2BasicFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.gallery: {
-                Activity activity = getActivity();
-                Intent i = new Intent(activity, ViewActivity.class);
-                startActivity(i);
+                if (mDir.exists() && mDir.listFiles().length > 0) {
+                    Activity activity = getActivity();
+                    Intent i = new Intent(activity, ViewActivity.class);
+                    startActivity(i);
+                } else {
+                    showToast(getString(R.string.no_images));
+                }
                 break;
             }
         }
@@ -1049,7 +1055,7 @@ public class Camera2BasicFragment extends Fragment
             saveLocation();
 
             //Save image to gallery
-            //addPicToGallery();
+            addPicToGallery();
         }
 
         private void saveLocation() {
@@ -1066,10 +1072,12 @@ public class Camera2BasicFragment extends Fragment
         }
 
         private void addPicToGallery() {
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            Uri contentUri = Uri.fromFile(mFile);
-            mediaScanIntent.setData(contentUri);
-            getActivity().sendBroadcast(mediaScanIntent);
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.DATA, mFile.getPath());
+            values.put(MediaStore.Images.Media.DATE_TAKEN, mFile.lastModified());
+
+            Uri mImageCaptureUri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+            getActivity().getContentResolver().notifyChange(Uri.parse("file://"+mFile.getPath()), null);
         }
 
     }

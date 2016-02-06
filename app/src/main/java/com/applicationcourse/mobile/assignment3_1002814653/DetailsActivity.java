@@ -3,6 +3,8 @@ package com.applicationcourse.mobile.assignment3_1002814653;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +21,8 @@ public class DetailsActivity extends AppCompatActivity {
 
     private String imagePath;
 
+    private Thread mBackgroundHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +32,7 @@ public class DetailsActivity extends AppCompatActivity {
         this.setTitle(location);
         ImageView imageView = (ImageView) findViewById(R.id.image);
         imageView.setImageBitmap(decodeSampledBitmapFromResource(imagePath, 500, 500));
+        mBackgroundHandler = new Thread(new ImageDelete(imagePath));
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -42,19 +47,39 @@ public class DetailsActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.delete) {
-            File fileToBeRemoved = new File(imagePath);
-            fileToBeRemoved.delete();
-            /*Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_REMOVED);
-            Uri contentUri = Uri.fromFile(fileToBeRemoved);
-            mediaScanIntent.setData(contentUri);
-            sendBroadcast(mediaScanIntent);*/
+            mBackgroundHandler.start();
             finish();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private class ImageDelete implements Runnable {
+
+        private String mFile;
+
+        public ImageDelete(String toDelete) {
+            mFile = toDelete;
+        }
+
+        @Override
+        public void run() {
+            File fileToBeRemoved = new File(mFile);
+            fileToBeRemoved.delete();
+            removePicFromGallery(fileToBeRemoved);
+        }
+    }
+
+    private void removePicFromGallery(File fileToBeRemoved) {
+        try {
+            getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    MediaStore.Images.Media.DATA + "='" + fileToBeRemoved.getPath() + "'",
+                    null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static int calculateInSampleSize(
