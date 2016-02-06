@@ -13,7 +13,7 @@ import com.applicationcourse.mobile.assignment3_1002814653.camera2basic.R;
 import java.io.File;
 
 /**
- * Created by pandu on 6/2/16.
+ * Created by teresa on 6/2/16.
  */
 public class DetailsActivity extends AppCompatActivity {
 
