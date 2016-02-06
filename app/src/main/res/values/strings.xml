@@ -24,4 +24,5 @@
     <string name="motion_detected">Motion detected</string>
     <string name="delete">Delete</string>
     <string name="no_images">No images to display</string>
+    <string name="image_deleted">Image deleted</string>
 </resources>

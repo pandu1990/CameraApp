@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.applicationcourse.mobile.assignment3_1002814653.camera2basic.R;
 
@@ -48,6 +49,7 @@ public class DetailsActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.delete) {
+            Toast.makeText(DetailsActivity.this, getString(R.string.image_deleted), Toast.LENGTH_SHORT).show();
             mBackgroundHandler.start();
             finish();
             return true;
