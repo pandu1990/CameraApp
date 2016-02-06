@@ -1023,7 +1023,7 @@ public class Camera2BasicFragment extends Fragment
         private final double mLatitude;
         private final double mLongitude;
 
-        public ImageSaver(Image image, File file, double longitude, double latitude) {
+        public ImageSaver(Image image, File file, double latitude, double longitude) {
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             mImage = image;
             mFile = new File(file.getAbsolutePath() + File.separator + "IMG_" + timeStamp + ".jpg");
