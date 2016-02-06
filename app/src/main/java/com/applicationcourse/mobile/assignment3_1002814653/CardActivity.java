@@ -76,6 +76,9 @@ public class CardActivity extends AppCompatActivity {
                         String longitude = String.format("%.6f", latlng[1]);*/
                         location = latlng[0] + ", " + latlng[1];
                     }
+                    if(latlng[0] == 0.0 && latlng[1] == 0.0) {
+                        location = "Location not available";
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
