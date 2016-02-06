@@ -38,7 +38,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.applicationcourse.mobile.assignment3_1002814653.ViewActivity"
+
+        <activity android:name="com.applicationcourse.mobile.assignment3_1002814653.CardActivity"
             android:theme="@style/CameraAppTheme"
             android:label="@string/description_gallery" />
         <activity android:name="com.applicationcourse.mobile.assignment3_1002814653.DetailsActivity"

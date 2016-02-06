@@ -1,16 +1,14 @@
 package com.applicationcourse.mobile.assignment3_1002814653;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import com.applicationcourse.mobile.assignment3_1002814653.camera2basic.R;
@@ -18,42 +16,45 @@ import com.applicationcourse.mobile.assignment3_1002814653.camera2basic.R;
 import java.io.File;
 import java.util.ArrayList;
 
-public class ViewActivity extends AppCompatActivity {
-
-    private GridView gridView;
-    private GridViewAdapter gridAdapter;
+public class CardActivity extends AppCompatActivity {
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view);
+        setContentView(R.layout.activity_card_view);
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
-        gridView = (GridView) findViewById(R.id.gridView);
-        //setItems();
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                ImageItem item = (ImageItem) parent.getItemAtPosition(position);
-                //Create intent
-                Intent intent = new Intent(ViewActivity.this, DetailsActivity.class);
-                intent.putExtra("location", item.getTitle());
-                intent.putExtra("path", item.getPath());
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
-                //Start details activity
-                startActivity(intent);
-            }
-        });
+        // specify an adapter (see also next example)
+        // setItems();
+       /* mAdapter = new CardAdapter(myDataset);
+        mRecyclerView.setAdapter(mAdapter);*/
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setItems();
     }
 
     private void setItems() {
         ArrayList<ImageItem> imageItems = getData();
         if(imageItems.isEmpty()) {
-            Toast.makeText(ViewActivity.this, getString(R.string.no_images), Toast.LENGTH_SHORT).show();
+            Toast.makeText(CardActivity.this, getString(R.string.no_images), Toast.LENGTH_SHORT).show();
             finish();
         }
-        gridAdapter = new GridViewAdapter(this, R.layout.grid_item_layout, imageItems);
-        gridView.setAdapter(gridAdapter);
+        mAdapter = new CardAdapter(CardActivity.this, imageItems);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     // Prepare some dummy data for gridview
@@ -71,9 +72,9 @@ public class ViewActivity extends AppCompatActivity {
                 try {
                     ExifInterface exif = new ExifInterface(listOfFiles[i].getAbsolutePath());
                     if (exif.getLatLong(latlng)) {
-                        String latitude = String.format("%.6f", latlng[0]);
-                        String longitude = String.format("%.6f", latlng[1]);
-                        location = latitude + ", " + longitude;
+                        /*String latitude = String.format("%.6f", latlng[0]);
+                        String longitude = String.format("%.6f", latlng[1]);*/
+                        location = latlng[0] + ", " + latlng[1];
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -106,11 +107,5 @@ public class ViewActivity extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(mCurrentPhotoPath, bmOptions);
         return bitmap;
-    }
-
-    @Override
-    protected void onResume() {
-        setItems();
-        super.onResume();
     }
 }

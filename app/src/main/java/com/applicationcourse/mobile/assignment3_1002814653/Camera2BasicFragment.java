@@ -986,7 +986,7 @@ public class Camera2BasicFragment extends Fragment
             case R.id.gallery: {
                 if (mDir.exists() && mDir.listFiles().length > 0) {
                     Activity activity = getActivity();
-                    Intent i = new Intent(activity, ViewActivity.class);
+                    Intent i = new Intent(activity, CardActivity.class);
                     startActivity(i);
                 } else {
                     showToast(getString(R.string.no_images));
