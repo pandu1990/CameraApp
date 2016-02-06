@@ -1,10 +1,13 @@
 package com.applicationcourse.mobile.assignment3_1002814653;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,7 +77,7 @@ public class CardActivity extends AppCompatActivity {
                 }
             });
             for (int i = 0; i < listOfFiles.length; i++) {
-                Bitmap myBitmap = setPic(listOfFiles[i].getAbsolutePath());
+                Bitmap myBitmap = getThumbnail(getContentResolver(), listOfFiles[i].getAbsolutePath());
                 float[] latlng = new float[2];
                 String location = "";
                 try {
@@ -94,6 +97,20 @@ public class CardActivity extends AppCompatActivity {
             }
         }
         return imageItems;
+    }
+
+    public static Bitmap getThumbnail(ContentResolver cr, String path) {
+
+        Cursor ca = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new String[] { MediaStore.MediaColumns._ID }, MediaStore.MediaColumns.DATA + "=?", new String[] {path}, null);
+        if (ca != null && ca.moveToFirst()) {
+            int id = ca.getInt(ca.getColumnIndex(MediaStore.MediaColumns._ID));
+            ca.close();
+            return MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MINI_KIND, null );
+        }
+
+        ca.close();
+        return null;
+
     }
 
     private Bitmap setPic(String mCurrentPhotoPath) {
