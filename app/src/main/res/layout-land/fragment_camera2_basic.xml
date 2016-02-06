@@ -15,7 +15,8 @@
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark">
 
     <com.applicationcourse.mobile.assignment3_1002814653.AutoFitTextureView
         android:id="@+id/texture"
@@ -33,18 +34,19 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/texture"
-        android:background="@color/control_background"
+        android:background="@color/black"
         android:orientation="horizontal">
 
         <ImageButton
             android:id="@+id/gallery"
             style="@android:style/Widget.Material.Light.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal|bottom"
             android:contentDescription="@string/description_gallery"
             android:padding="10dp"
-            android:src="@drawable/ic_action_gallery" />
+            android:src="@drawable/ic_action_gallery"
+            android:background="@drawable/circle"/>
 
 
     </FrameLayout>
