@@ -480,7 +480,9 @@ public class Camera2BasicFragment extends Fragment
                 handler.postDelayed(new Runnable() {
                     public void run() {
                         // Take Picture
-                        takePicture();
+                        if(mCaptureSession != null) {
+                            takePicture();
+                        }
                         // Resume detection
                         mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
                     }
